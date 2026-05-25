@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Votos por Partido Político - República Dominicana</title>
+  <script src="chart.js"></script>
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+  <h2>Formulario: Ingresar Votos por Partido Político</h2>
+  <form id="formPolitico">
+    <label for="partido">Partido Político:</label>
+    <select id="partido" required>
+      <option value="">Selecciona un partido</option>
+      <option value="PRM">Partido Revolucionario Moderno (PRM)</option>
+      <option value="PLD">Partido de la Liberación Dominicana (PLD)</option>
+      <option value="FP">Fuerza del Pueblo (FP)</option>
+      <option value="PRD">Partido Revolucionario Dominicano (PRD)</option>
+      <option value="DXC">Dominicanos por el Cambio (DxC)</option>
+      <option value="ALPAIS">Alianza País (ALPAIS)</option>
+    </select>
+
+    <label for="votos">Cantidad de Votos:</label>
+    <input type="number" id="votos" required placeholder="Ej: 450000">
+
+    <button type="submit">Agregar y Actualizar Gráfico</button>
+  </form>
+
+  <canvas id="graficoVotos" width="600" height="400"></canvas>
+
+  <script>
+    const partidos = [];
+    const votos = [];
+    const coloresPorPartido = {
+    "PRM": "#1E90FF", 
+    "PLD": "#800080",    
+    "FP": "#2ECC71",   
+    "PRD": "#FFFFFF",   
+    "DXC": "#FFA500",    
+    "ALPAIS": "#228B22"  
+    };
+
+const backgroundColors = [];
+
+
+    const ctx = document.getElementById('graficoVotos').getContext('2d');
+    const grafico = new Chart(ctx, {
+      type: 'polarArea',
+      data: {
+        labels: partidos,
+        datasets: [{
+          label: 'Votos por Partido',
+          data: votos,
+          backgroundColor: backgroundColors,
+          borderColor: '#2d3436',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Cantidad de Votos'
+            }
+          }
+        }
+      }
+    });
+
+    document.getElementById('formPolitico').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const partido = document.getElementById('partido').value;
+      const cantidad = parseInt(document.getElementById('votos').value);
+
+
+
+      if (partido && !isNaN(cantidad)) {
+        const index = partidos.indexOf(partido);
+        if (index === -1) {
+          partidos.push(partido);
+          votos.push(cantidad);
+          backgroundColors.push(coloresPorPartido[partido] || "#999")
+        } else {
+          votos[index] = cantidad; 
+        }
+        grafico.update();
+        this.reset();
+      }
+    });
+  </script>
+<footer>
+  &copy; 2026 Ebenezer Peña 
+</footer>
+</body>
+</html>

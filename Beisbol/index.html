@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Estadísticas de Béisbol Dominicano</title>
+  <script src="chart.js"></script>
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+  <h2>Formulario: Ingresar Victorias por Equipo (LIDOM)</h2>
+  <form id="formBeisbol">
+    <label for="equipo">Equipo:</label>
+    <select id="equipo" required>
+      <option value="">Selecciona un equipo</option>
+      <option value="Tigres del Licey">Tigres del Licey</option>
+      <option value="Águilas Cibaeñas">Águilas Cibaeñas</option>
+      <option value="Leones del Escogido">Leones del Escogido</option>
+      <option value="Estrellas Orientales">Estrellas Orientales</option>
+      <option value="Gigantes del Cibao">Gigantes del Cibao</option>
+      <option value="Toros del Este">Toros del Este</option>
+    </select>
+
+    <label for="victorias">Victorias:</label>
+    <input type="number" id="victorias" required placeholder="Ej: 25">
+
+    <button type="submit">Agregar y Actualizar Gráfico</button>
+  </form>
+
+  <canvas id="graficoEquipos" width="600" height="400"></canvas>
+
+  <script>
+    const equipos = [];
+    const victorias = [];
+    const coloresPorEquipo = {
+    "Tigres del Licey": "#005BAC", 
+    "Águilas Cibaeñas": "#FFD700", 
+    "Leones del Escogido": "#C8102E",
+    "Estrellas Orientales": "#008000", 
+    "Gigantes del Cibao": "#800000",
+    "Toros del Este": "#FF6600"  
+    };
+
+const backgroundColors = [];
+
+    const ctx = document.getElementById('graficoEquipos').getContext('2d');
+    const grafico = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: equipos,
+        datasets: [{
+          label: 'Victorias por Equipo',
+          data: victorias,
+          backgroundColor: backgroundColors,
+          borderColor: '#2c3e50',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Número de Victorias'
+            }
+          }
+        }
+      }
+    });
+
+    document.getElementById('formBeisbol').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const equipo = document.getElementById('equipo').value;
+      const victoria = parseInt(document.getElementById('victorias').value);
+
+
+      if (equipo && !isNaN(victoria)) {
+        const index = equipos.indexOf(equipo);
+        if (index === -1) {
+          equipos.push(equipo);
+          victorias.push(victoria);
+          backgroundColors.push(coloresPorEquipo[equipo] || '#cccccc');
+
+        } else {
+          victorias[index] = victoria; 
+        }
+        grafico.update();
+        this.reset();
+      }
+    });
+  </script>
+
+<footer>
+  &copy; 2026 Ebenezer Peña 
+</footer>
+
+</body>
+</html>

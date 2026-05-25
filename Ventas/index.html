@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario con gráfico de ventas</title>
+  <script src="chart.js"></script>
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+  <h2>Formulario: Ingresar Ventas Mensuales</h2>
+  <form id="ventasForm">
+    <label for="mes">Mes:</label>
+    <input type="text" id="mes" required placeholder="Ej: Enero">
+
+    <label for="ventas">Ventas:</label>
+    <input type="number" id="ventas" required placeholder="Ej: 1500">
+
+    <button type="submit">Agregar Datos y Actualizar Gráfico</button>
+  </form>
+
+  <canvas id="graficoVentas" width="600" height="400"></canvas>
+
+  <script>
+    const meses = [];
+    const ventas = [];
+    const coloresPorMes = {
+    "Enero": "#3498db",
+    "Febrero": "#9b59b6",
+    "Marzo": "#2ecc71",
+    "Abril": "#f1c40f",
+    "Mayo": "#e67e22",
+    "Junio": "#1abc9c",
+    "Julio": "#34495e",
+    "Agosto": "#d35400",
+    "Septiembre": "#e74c3c",
+    "Octubre": "#16a085",
+    "Noviembre": "#7f8c8d",
+    "Diciembre": "#2980b9"
+  };
+
+
+    const backgroundColors = [];
+    const ctx = document.getElementById('graficoVentas').getContext('2d');
+    const grafico = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: meses,
+        datasets: [{
+          label: 'Ventas por Mes',
+          data: ventas,
+          backgroundColor: backgroundColors,
+          borderColor: '#2c3e50',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    document.getElementById('ventasForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const mes = document.getElementById('mes').value;
+      const venta = parseFloat(document.getElementById('ventas').value);
+
+      if (mes && !isNaN(venta)) {
+        meses.push(mes);
+        ventas.push(venta);
+
+        backgroundColors.push(coloresPorMes[mes] || "#bdc3c7");
+
+        grafico.update();
+        this.reset();
+
+        // Limpia el formulario
+        document.getElementById('ventasForm').reset();
+      }else{
+        alert("Este mes ya fue ingresado. Ingrese otro mes.")
+      }
+    });
+  </script>
+
+<footer>
+  &copy; 2026 Ebenezer Peña 
+</footer>
+
+</body>
+</html>
